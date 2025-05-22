@@ -1,4 +1,4 @@
-package com.yyy.omdbcomposemm.ui.theme
+package com.yyy.theme
 
 import androidx.compose.ui.graphics.Color
 
