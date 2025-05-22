@@ -2,6 +2,8 @@ package com.yyy.data.repository
 
 import com.yyy.data.di.IO
 import com.yyy.data.remote.RemoteDataSource
+import com.yyy.data.remote.model.MovieSearchResponse
+import com.yyy.data.remote.model.toDomainModel
 import com.yyy.data.util.NetworkResponse
 import com.yyy.data.util.makeCallWithTryCatch
 import com.yyy.domain.repository.MoviesRepository
@@ -14,11 +16,13 @@ class MoviesRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : MoviesRepository {
+
     override suspend fun getMovies(query: String): MoviesRepositoryResult =
         withContext(ioDispatcher) {
             when (val result = makeCallWithTryCatch { remoteDataSource.getMovies(query) }) {
                 is NetworkResponse.Success -> {
-                    MoviesRepositoryResult.Success
+                    val movies = (result.data as MovieSearchResponse).toDomainModel()
+                    MoviesRepositoryResult.Success(movies)
                 }
 
                 is NetworkResponse.Error -> {
@@ -26,5 +30,4 @@ class MoviesRepositoryImpl @Inject constructor(
                 }
             }
         }
-
 }

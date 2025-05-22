@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     NavGraph(navController)
 
                     when (selectedTabIndex) {
-                        0 -> navController.navigate(RouteClass.Films())
+                        0 -> navController.navigate(RouteClass.MovieSearch())
                         1 -> navController.navigate(RouteClass.Favorites())
                         2 -> navController.navigate(RouteClass.Settings())
                     }

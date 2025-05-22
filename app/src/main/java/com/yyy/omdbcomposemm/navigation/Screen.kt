@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 sealed class RouteClass() {
 
     @Serializable
-    data class Films(
-        val name: String = "Films"
+    data class MovieSearch(
+        val name: String = "MovieSearch"
     ) : RouteClass()
 
     @Serializable

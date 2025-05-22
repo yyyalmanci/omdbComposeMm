@@ -1,6 +1,10 @@
 package com.yyy.data.di
 
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.yyy.data.BuildConfig
+import com.yyy.data.api.OmdbApi
+import com.yyy.data.network.ApiKeyInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -9,9 +13,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
-import com.yyy.data.api.OmdbApi
-import com.yyy.data.network.ApiKeyInterceptor
-import com.yyy.data.BuildConfig
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,9 +32,13 @@ object NetworkModule {
             .addInterceptor(apiKeyInterceptor)
             .build()
 
-    @Provides
     @Singleton
-    fun provideMoshi(): Moshi = Moshi.Builder().build()
+    @Provides
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+    }
 
     @Provides
     @Singleton

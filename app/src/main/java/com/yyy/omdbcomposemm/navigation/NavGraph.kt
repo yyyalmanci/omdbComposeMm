@@ -6,22 +6,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.yyy.omdbcomposemm.Greeting
 import com.yyy.omdbcomposemm.navigation.RouteClass
+import com.yyy.ui.screen.MovieSearchScreen
 
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    startDestination: RouteClass = RouteClass.Films()
+    startDestination: RouteClass = RouteClass.MovieSearch()
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
-        composable<RouteClass.Films> {
-            Greeting(
-                name = RouteClass.Films().name,
-                modifier = Modifier.padding()
-            )
+        composable<RouteClass.MovieSearch> {
+            MovieSearchScreen()
         }
         composable<RouteClass.Favorites> {
             Greeting(
