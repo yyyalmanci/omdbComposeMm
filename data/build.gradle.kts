@@ -40,4 +40,18 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    //networking
+    implementation(libs.retrofit2)
+    implementation(libs.okhttp3)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.retrofit.converter.moshi)
+
+    //coroutines
+    implementation(libs.kotlinx.coroutines.android)
+
+    //hilt
+    implementation(libs.hilt.android)
+    implementation(libs.ksp.compiler.hilt)
+    
 }
