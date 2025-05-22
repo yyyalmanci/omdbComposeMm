@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -7,11 +10,25 @@ android {
     namespace = "com.yyy.data"
     compileSdk = 35
 
+    buildFeatures {
+        buildConfig = true
+    }
+
+    val localProperties = Properties().apply {
+        val file = rootProject.file("local.properties")
+        if (file.exists()) {
+            load(FileInputStream(file))
+        }
+    }
+    val omdbApiKey = localProperties["omdbApiKey"] as String? ?: ""
+
     defaultConfig {
         minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String", "OMDB_API_KEY", "\"$omdbApiKey\"")
     }
 
     buildTypes {
@@ -24,15 +41,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
 
 dependencies {
+
+    implementation(project(":domain"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -53,5 +72,5 @@ dependencies {
     //hilt
     implementation(libs.hilt.android)
     implementation(libs.ksp.compiler.hilt)
-    
+
 }
