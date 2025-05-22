@@ -21,3 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "omdbComposeMm"
 include(":app")
+include(":ui")
+include(":data")
+include(":domain")
+include(":theme")
