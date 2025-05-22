@@ -1,16 +1,23 @@
 package com.yyy.omdbcomposemm
 
+import NavGraph
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.yyy.omdbcomposemm.navigation.RouteClass
 import com.yyy.theme.OmdbComposeMmTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,14 +25,35 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             OmdbComposeMmTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+                var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
+                val tabs = listOf("Films", "Favorites", "Settings")
+
+                Column {
+                    TabRow(selectedTabIndex = selectedTabIndex) {
+                        tabs.forEachIndexed { index, title ->
+                            Tab(
+                                selected = selectedTabIndex == index,
+                                onClick = { selectedTabIndex = index },
+                                text = {
+                                    Text(
+                                        style = MaterialTheme.typography.titleMedium,
+                                        text = title
+                                    )
+                                }
+                            )
+                        }
+                    }
+
+                    NavGraph(navController)
+
+                    when (selectedTabIndex) {
+                        0 -> navController.navigate(RouteClass.Films())
+                        1 -> navController.navigate(RouteClass.Favorites())
+                        2 -> navController.navigate(RouteClass.Settings())
+                    }
                 }
             }
         }
