@@ -14,6 +14,7 @@ import com.yyy.domain.usecase.ToggleFavoriteMovieUseCase
 import com.yyy.theme.ThemeOption
 import com.yyy.ui.model.FavoriteMovieId
 import com.yyy.ui.model.MovieSearchUiState
+import com.yyy.ui.model.SortOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +36,9 @@ class MovieSearchViewModel @Inject constructor(
 
     private val _themeState = MutableStateFlow(ThemeOption.SYSTEM)
     val themeState: StateFlow<ThemeOption> = _themeState.asStateFlow()
+
+    private val _operatedList = MutableStateFlow(emptyList<MovieSearchResultItem>())
+    val operatedList: StateFlow<List<MovieSearchResultItem>> = _operatedList
 
     private var currentQuery: String = ""
     var currentPage: Int = 1
@@ -154,5 +158,45 @@ class MovieSearchViewModel @Inject constructor(
         viewModelScope.launch {
             toggleFavoriteMovieUseCase(movie, listTitle)
         }
+    }
+
+    fun setSelectedType(type: String?) {
+        _uiState.update { it.copy(typeFilter = type) }
+        updateOperatedList()
+    }
+
+    fun setYearFilter(year: String?) {
+        _uiState.update { it.copy(yearFilter = year) }
+        updateOperatedList()
+    }
+
+    fun setSortOption(sortOption: SortOption) {
+        _uiState.update { it.copy(sortOption = sortOption) }
+        updateOperatedList()
+    }
+
+    private fun updateOperatedList() {
+        val list = _uiState.value.movies.search.filter {
+            val typeMatch = if (_uiState.value.typeFilter != null) {
+                it.type == _uiState.value.typeFilter
+            } else {
+                true
+            }
+            val yearMatch = if (_uiState.value.yearFilter != null) {
+                it.year.contains(_uiState.value.yearFilter.orEmpty())
+            } else {
+                true
+            }
+            typeMatch && yearMatch
+        }
+        _operatedList.update {
+            when (_uiState.value.sortOption) {
+                SortOption.YEAR -> list.sortedByDescending { it.sortYear }
+                SortOption.A_TO_Z -> list.sortedBy { it.title }
+                SortOption.Z_TO_A -> list.sortedByDescending { it.title }
+                else -> list
+            }
+        }
+
     }
 }

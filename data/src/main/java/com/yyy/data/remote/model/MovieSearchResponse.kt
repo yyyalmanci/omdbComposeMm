@@ -42,5 +42,10 @@ fun MovieSearchResultItemResponse.toModel() = MovieSearchResultItem(
     imdbID = imdbID.orEmpty(),
     type = type.orEmpty(),
     poster = poster.orEmpty(),
-    listTitle = ""
+    listTitle = "",
+    sortYear = if (year?.contains("–") == true) {
+        year.split("–").first().toInt()
+    } else {
+        year?.toInt() ?: 0
+    }
 )

@@ -46,6 +46,7 @@ class FavoritesRepositoryImpl @Inject constructor(
         year = year,
         type = type,
         poster = poster,
-        listTitle = listTitle
+        listTitle = listTitle,
+        sortYear = 0
     )
 } 

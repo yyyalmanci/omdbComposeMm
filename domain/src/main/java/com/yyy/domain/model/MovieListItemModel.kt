@@ -12,5 +12,6 @@ data class MovieSearchResultItem(
     val imdbID: String,
     val type: String,
     val poster: String,
-    val listTitle: String
+    val listTitle: String,
+    val sortYear: Int
 )

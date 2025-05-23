@@ -27,4 +27,16 @@
     <string name="light_theme">Açık Tema</string>
     <string name="dark_theme">Koyu Tema</string>
     <string name="system_theme">Sistem Teması</string>
+    <string name="filters">Filtreler:</string>
+    <string name="movie">Film</string>
+    <string name="series">Dizi</string>
+    <string name="episode">Bölüm</string>
+    <string name="year">Yıl</string>
+    <string name="select_year">Yıl Seçin</string>
+    <string name="apply">Uygula</string>
+    <string name="delete_filter">Filtreyi Temizle</string>
+    <string name="sort">Sırala:</string>
+    <string name="sort_by_year">Yıl</string>
+    <string name="sort_a_to_z">A-Z</string>
+    <string name="sort_z_to_a">Z-A</string>
 </resources>

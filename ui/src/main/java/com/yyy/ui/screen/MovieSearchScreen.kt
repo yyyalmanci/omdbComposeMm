@@ -8,23 +8,30 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,6 +59,8 @@ import com.yyy.theme.OmdbComposeMmTheme
 import com.yyy.ui.R
 import com.yyy.ui.commonview.AddToFavoritesDialog
 import com.yyy.ui.commonview.RemoveConfirmationDialog
+import com.yyy.ui.model.MovieType
+import com.yyy.ui.model.SortOption
 import com.yyy.ui.viewmodel.MovieSearchViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -59,11 +68,13 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun MovieSearchScreen(viewModel: MovieSearchViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val operatedList by viewModel.operatedList.collectAsStateWithLifecycle()
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var isSearchFocused by remember { mutableStateOf(false) }
     val gridState = rememberLazyGridState()
     var showAddToFavoritesDialog by remember { mutableStateOf<MovieSearchResultItem?>(null) }
     var showRemoveConfirmationDialog by remember { mutableStateOf<MovieSearchResultItem?>(null) }
+    var showYearDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     LaunchedEffect(gridState, uiState) {
@@ -83,6 +94,97 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.filters),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            TypeFilterChip(
+                text = stringResource(R.string.movie),
+                selected = uiState.typeFilter == MovieType.MOVIE.type,
+                onClick = { viewModel.setSelectedType(if (uiState.typeFilter == MovieType.MOVIE.type) null else MovieType.MOVIE.type) }
+            )
+            TypeFilterChip(
+                text = stringResource(R.string.series),
+                selected = uiState.typeFilter == MovieType.SERIES.type,
+                onClick = { viewModel.setSelectedType(if (uiState.typeFilter == MovieType.SERIES.type) null else MovieType.SERIES.type) }
+            )
+            TypeFilterChip(
+                text = stringResource(R.string.episode),
+                selected = uiState.typeFilter == MovieType.EPISODE.type,
+                onClick = { viewModel.setSelectedType(if (uiState.typeFilter == MovieType.EPISODE.type) null else MovieType.EPISODE.type) }
+            )
+            TypeFilterChip(
+                text = if (uiState.yearFilter != null) {
+                    uiState.yearFilter.orEmpty()
+                } else {
+                    stringResource(R.string.year)
+                },
+                selected = uiState.yearFilter != null,
+                onClick = { showYearDialog = true }
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.sort),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            TypeFilterChip(
+                text = stringResource(R.string.sort_by_year),
+                selected = uiState.sortOption == SortOption.YEAR,
+                onClick = {
+                    viewModel.setSortOption(
+                        if (uiState.sortOption == SortOption.YEAR) {
+                            SortOption.NONE
+                        } else {
+                            SortOption.YEAR
+                        }
+                    )
+                }
+            )
+            TypeFilterChip(
+                text = stringResource(R.string.sort_a_to_z),
+                selected = uiState.sortOption == SortOption.A_TO_Z,
+                onClick = {
+                    viewModel.setSortOption(
+                        if (uiState.sortOption == SortOption.A_TO_Z) {
+                            SortOption.NONE
+                        } else {
+                            SortOption.A_TO_Z
+                        }
+                    )
+                }
+            )
+            TypeFilterChip(
+                text = stringResource(R.string.sort_z_to_a),
+                selected = uiState.sortOption == SortOption.Z_TO_A,
+                onClick = {
+                    viewModel.setSortOption(
+                        if (uiState.sortOption == SortOption.Z_TO_A) {
+                            SortOption.NONE
+                        } else {
+                            SortOption.Z_TO_A
+                        }
+                    )
+                }
+            )
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -180,7 +282,16 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         state = gridState
                     ) {
-                        items(items = uiState.movies.search, key = { it.imdbID }) { movie ->
+                        items(
+                            items = if (uiState.sortOption != SortOption.NONE ||
+                                uiState.yearFilter.isNullOrEmpty().not() ||
+                                uiState.typeFilter.isNullOrEmpty().not()
+                            ) {
+                                operatedList
+                            } else {
+                                uiState.movies.search
+                            }
+                        ) { movie ->
                             val isFavorite =
                                 movie.imdbID in uiState.favoriteMovieIds.map { it.imdbId }
                             MoviePoster(
@@ -225,13 +336,23 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel) {
             onDismiss = { showRemoveConfirmationDialog = null },
             onConfirm = {
                 showRemoveConfirmationDialog?.let { movie ->
-                    // Find the list title for this movie
                     val listTitle =
                         uiState.favoriteMovieIds.find { it.imdbId == movie.imdbID }?.listTitle
                             ?: context.getString(R.string.unnamed_list)
                     viewModel.toggleFavorite(movie, listTitle)
                 }
                 showRemoveConfirmationDialog = null
+            }
+        )
+    }
+
+    if (showYearDialog) {
+        YearFilterDialog(
+            currentYear = uiState.yearFilter,
+            onDismiss = { showYearDialog = false },
+            onYearSelected = { year ->
+                viewModel.setYearFilter(year)
+                showYearDialog = false
             }
         )
     }
@@ -315,7 +436,8 @@ fun MoviePosterPreview() {
                 imdbID = "tt1234567",
                 type = "movie",
                 poster = "",
-                listTitle = "Favorites"
+                listTitle = "Favorites",
+                sortYear = 2011
             ),
             isFavorite = true,
             onFavoriteClick = {},
@@ -330,4 +452,104 @@ fun getNextLoadPoint(itemSize: Int) = if (PAGE_ITEM_SIZE * 4 >= itemSize) {
     itemSize - 4
 } else {
     itemSize - 8
+}
+
+@Composable
+private fun TypeFilterChip(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        label = { Text(text) },
+        modifier = modifier,
+        colors = FilterChipDefaults.filterChipColors(
+            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    )
+}
+
+@Composable
+private fun YearFilterDialog(
+    currentYear: String?,
+    onDismiss: () -> Unit,
+    onYearSelected: (String?) -> Unit
+) {
+    var selectedYear by remember { mutableStateOf(currentYear) }
+    val years = remember { (1900..2100).map { it.toString() } }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.select_year)) },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+            ) {
+
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onYearSelected(null) }
+                        .padding(vertical = 4.dp),
+                    color = if (selectedYear == null)
+                        MaterialTheme.colorScheme.primaryContainer
+                    else
+                        MaterialTheme.colorScheme.surface
+                ) {
+                    Text(
+                        text = stringResource(R.string.delete_filter),
+                        modifier = Modifier.padding(8.dp),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (selectedYear == null)
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        else
+                            MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(1.dp)
+                ) {
+                    items(years) { year ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { selectedYear = year },
+                            color = if (selectedYear == year)
+                                MaterialTheme.colorScheme.primaryContainer
+                            else
+                                MaterialTheme.colorScheme.surface
+                        ) {
+                            Text(
+                                text = year,
+                                modifier = Modifier.padding(8.dp),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = if (selectedYear == year)
+                                    MaterialTheme.colorScheme.onPrimaryContainer
+                                else
+                                    MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onYearSelected(selectedYear) }) {
+                Text(stringResource(R.string.apply))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
 }
