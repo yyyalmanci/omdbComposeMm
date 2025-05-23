@@ -1,4 +1,4 @@
-package com.yyy.omdbcomposemm.navigation
+package com.yyy.ui.route
 
 import kotlinx.serialization.Serializable
 
@@ -13,6 +13,12 @@ sealed class RouteClass() {
     @Serializable
     data class FavoritesList(
         val name: String = "FavoritesList"
+    ) : RouteClass()
+
+    @Serializable
+    data class FavoritesListDetail(
+        val name: String = "FavoritesListDetail",
+        val listTitle: String
     ) : RouteClass()
 
     @Serializable

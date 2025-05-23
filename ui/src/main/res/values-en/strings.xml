@@ -40,4 +40,9 @@
     <string name="sort_by_year">Year</string>
     <string name="sort_a_to_z">A-Z</string>
     <string name="sort_z_to_a">Z-A</string>
+    <string name="favorite_list_detail">%s List</string>
+    <string name="move_to_list">Move to List</string>
+    <string name="select_target_list">Select List</string>
+    <string name="move_movie">Move Film</string>
+    <string name="no_other_lists">There is no other lists</string>
 </resources>

@@ -39,4 +39,9 @@
     <string name="sort_by_year">Yıl</string>
     <string name="sort_a_to_z">A-Z</string>
     <string name="sort_z_to_a">Z-A</string>
+    <string name="favorite_list_detail">%s Listesi</string>
+    <string name="move_to_list">Listeye Taşı</string>
+    <string name="select_target_list">Hedef Liste Seçin</string>
+    <string name="move_movie">Filmi Taşı</string>
+    <string name="no_other_lists">Başka liste bulunmuyor</string>
 </resources>
