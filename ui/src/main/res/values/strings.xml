@@ -16,6 +16,7 @@
     <string name="favorite_lists">Favori Listeleri</string>
     <string name="movie_count">%d film</string>
     <string name="no_favorite_lists">Henüz favori listeniz bulunmuyor</string>
+    <string name="view_list">Listeyi Görüntüle</string>
     <string name="add_to_list">Listeye Ekle</string>
     <string name="select_list">Liste Seçin</string>
     <string name="new_list_name">Yeni Liste Adı</string>

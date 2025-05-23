@@ -16,10 +16,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.yyy.omdbcomposemm.navigation.RouteClass
 import com.yyy.theme.OmdbComposeMmTheme
+import com.yyy.ui.viewmodel.MovieSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,6 +34,7 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
                 val tabs = listOf("Films", "Favorites", "Settings")
+                val movieSearchViewModel: MovieSearchViewModel = hiltViewModel()
 
                 Column {
                     TabRow(selectedTabIndex = selectedTabIndex) {
@@ -49,7 +52,10 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    NavGraph(navController)
+                    NavGraph(
+                        navController = navController,
+                        movieSearchViewModel = movieSearchViewModel
+                    )
 
                     when (selectedTabIndex) {
                         0 -> {
