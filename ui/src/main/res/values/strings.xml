@@ -23,4 +23,8 @@
     <string name="create_new_list">Yeni Liste Oluştur</string>
     <string name="create">Oluştur</string>
     <string name="cancel">İptal</string>
+    <string name="theme_settings">Tema Ayarları</string>
+    <string name="light_theme">Açık Tema</string>
+    <string name="dark_theme">Koyu Tema</string>
+    <string name="system_theme">Sistem Teması</string>
 </resources>

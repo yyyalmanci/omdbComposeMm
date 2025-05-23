@@ -8,8 +8,10 @@ import com.yyy.domain.model.MovieSearchResultItem
 import com.yyy.domain.repository.result.MoviesRepositoryResult
 import com.yyy.domain.usecase.GetFavoriteMoviesUseCase
 import com.yyy.domain.usecase.GetSearchHistoryUseCase
+import com.yyy.domain.usecase.GetThemeUseCase
 import com.yyy.domain.usecase.SearchMoviesUseCase
 import com.yyy.domain.usecase.ToggleFavoriteMovieUseCase
+import com.yyy.theme.ThemeOption
 import com.yyy.ui.model.FavoriteMovieId
 import com.yyy.ui.model.MovieSearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,10 +27,14 @@ class MovieSearchViewModel @Inject constructor(
     private val searchMoviesUseCase: SearchMoviesUseCase,
     private val getSearchHistoryUseCase: GetSearchHistoryUseCase,
     private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
-    private val toggleFavoriteMovieUseCase: ToggleFavoriteMovieUseCase
+    private val toggleFavoriteMovieUseCase: ToggleFavoriteMovieUseCase,
+    private val getThemeUseCase: GetThemeUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieSearchUiState())
     val uiState: StateFlow<MovieSearchUiState> = _uiState.asStateFlow()
+
+    private val _themeState = MutableStateFlow(ThemeOption.SYSTEM)
+    val themeState: StateFlow<ThemeOption> = _themeState.asStateFlow()
 
     private var currentQuery: String = ""
     var currentPage: Int = 1
@@ -36,6 +42,13 @@ class MovieSearchViewModel @Inject constructor(
     private var endReached = false
 
     init {
+        viewModelScope.launch {
+            getThemeUseCase().collect { theme ->
+                _themeState.update {
+                    theme
+                }
+            }
+        }
         viewModelScope.launch {
             getSearchHistoryUseCase().collect { history ->
                 _uiState.update { it.copy(searchHistory = history) }
@@ -80,11 +93,13 @@ class MovieSearchViewModel @Inject constructor(
                             it.copy(isLoading = false)
                         }
                     }
+
                     is MoviesRepositoryResult.Loading -> {
                         _uiState.update {
                             it.copy(isLoading = true)
                         }
                     }
+
                     is MoviesRepositoryResult.Success -> {
                         val newList = result.movie.search
                         _uiState.update {
@@ -123,9 +138,11 @@ class MovieSearchViewModel @Inject constructor(
                             )
                         }
                     }
+
                     is MoviesRepositoryResult.Failed -> {
                         endReached = true
                     }
+
                     else -> {}
                 }
                 isLoadingMore = false

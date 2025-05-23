@@ -41,6 +41,8 @@ android {
 
 dependencies {
 
+    implementation(project(":theme"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
@@ -50,4 +52,5 @@ dependencies {
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.ksp.compiler.hilt)
+
 }
