@@ -2,8 +2,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.yyy.omdbcomposemm.navigation.RouteClass
 import com.yyy.theme.ThemeOption
+import com.yyy.ui.route.RouteClass
+import com.yyy.ui.screen.FavoriteListDetailScreen
 import com.yyy.ui.screen.FavoritesListScreen
 import com.yyy.ui.screen.MovieSearchScreen
 import com.yyy.ui.screen.SettingsScreen
@@ -24,15 +25,20 @@ fun NavGraph(
         composable<RouteClass.MovieSearch> {
             MovieSearchScreen(movieSearchViewModel)
         }
+        composable<RouteClass.Settings> {
+            SettingsScreen(themeOption)
+        }
+        composable<RouteClass.FavoritesListDetail> {
+            FavoriteListDetailScreen {
+                navController.popBackStack()
+            }
+        }
         composable<RouteClass.FavoritesList> {
             FavoritesListScreen(
                 onListClick = { listTitle ->
-                    // TODO: Navigate to list detail screen
+                    navController.navigate(RouteClass.FavoritesListDetail(listTitle = listTitle))
                 }
             )
-        }
-        composable<RouteClass.Settings> {
-            SettingsScreen(themeOption)
         }
     }
 }
