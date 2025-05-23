@@ -2,13 +2,13 @@ package com.yyy.data.remote.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.yyy.domain.model.MovieListItemDomainModel
-import com.yyy.domain.model.MovieSearchResultItemDomainModel
+import com.yyy.domain.model.MovieListItem
+import com.yyy.domain.model.MovieSearchResultItem
 
 @JsonClass(generateAdapter = true)
 data class MovieSearchResponse(
     @Json(name = "Search")
-    val search: List<MovieSearchResultItem>?,
+    val search: List<MovieSearchResultItemResponse>?,
     @Json(name = "totalResults")
     val totalResults: String?,
     @Json(name = "Response")
@@ -16,7 +16,7 @@ data class MovieSearchResponse(
 )
 
 @JsonClass(generateAdapter = true)
-data class MovieSearchResultItem(
+data class MovieSearchResultItemResponse(
     @Json(name = "Title")
     val title: String?,
     @Json(name = "Year")
@@ -29,17 +29,17 @@ data class MovieSearchResultItem(
     val poster: String?
 )
 
-fun MovieSearchResponse.toDomainModel() = MovieListItemDomainModel(
-    search = search?.map { it.toDomainModel() },
-    totalResults = totalResults,
-    response = response
+fun MovieSearchResponse.toModel() = MovieListItem(
+    search = search?.map { it.toModel() }.orEmpty(),
+    totalResults = totalResults.orEmpty(),
+    response = response.orEmpty()
 
 )
 
-fun MovieSearchResultItem.toDomainModel() = MovieSearchResultItemDomainModel(
-    title = title,
-    year = year,
-    imdbID = imdbID,
-    type = type,
-    poster = poster
+fun MovieSearchResultItemResponse.toModel() = MovieSearchResultItem(
+    title = title.orEmpty(),
+    year = year.orEmpty(),
+    imdbID = imdbID.orEmpty(),
+    type = type.orEmpty(),
+    poster = poster.orEmpty()
 )

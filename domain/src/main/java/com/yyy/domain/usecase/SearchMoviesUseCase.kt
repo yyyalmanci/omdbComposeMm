@@ -9,8 +9,8 @@ import javax.inject.Inject
 class SearchMoviesUseCase @Inject constructor(
     private val repository: MoviesRepository
 ) {
-    suspend operator fun invoke(query: String): Flow<MoviesRepositoryResult> = flow {
+    operator fun invoke(query: String, page: Int): Flow<MoviesRepositoryResult> = flow {
         emit(MoviesRepositoryResult.Loading)
-        emit(repository.getMovies(query))
+        emit(repository.getMovies(query, page))
     }
 }

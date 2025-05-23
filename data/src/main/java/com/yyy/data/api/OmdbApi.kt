@@ -8,6 +8,7 @@ import retrofit2.http.Query
 interface OmdbApi {
     @GET("/")
     suspend fun getMovies(
-        @Query("s") query: String
+        @Query("s") query: String,
+        @Query("page") page: Int
     ): Response<MovieSearchResponse>
 } 

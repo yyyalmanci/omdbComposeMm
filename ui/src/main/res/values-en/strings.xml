@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_film">"Search Film..."</string>
+    <string name="search">"Search"</string>
+    <string name="film_not_found">"Film is not found"</string>
+    <string name="add_to_favorites">"Add to Favorites"</string>
+    <string name="need_search_film">"Please search a film..."</string>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="search_film">"Film ara..."</string>
+    <string name="search">"Ara"</string>
+    <string name="film_not_found">Film Bulunamadı</string>
+    <string name="add_to_favorites">"Favorilere Ekle"</string>
+    <string name="need_search_film">"Lütfen bir film ara..."</string>
+</resources>

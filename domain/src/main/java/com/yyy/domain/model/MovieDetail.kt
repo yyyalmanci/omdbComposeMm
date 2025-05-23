@@ -1,6 +1,6 @@
 package com.yyy.domain.model
 
-data class MovieDetailDomainModel(
+data class MovieDetail(
     val title: String?,
     val year: String?,
     val rated: String?,
@@ -15,7 +15,7 @@ data class MovieDetailDomainModel(
     val country: String?,
     val awards: String?,
     val poster: String?,
-    val ratings: List<RatingDomainModel>?,
+    val ratings: List<Rating>?,
     val metascore: String?,
     val imdbRating: String?,
     val imdbVotes: String?,
@@ -28,7 +28,7 @@ data class MovieDetailDomainModel(
     val response: String?
 )
 
-data class RatingDomainModel(
+data class Rating(
     val source: String?,
     val value: String?
 )
