@@ -4,5 +4,5 @@ import com.yyy.domain.repository.result.MoviesRepositoryResult
 
 
 interface MoviesRepository {
-    suspend fun getMovies(query: String): MoviesRepositoryResult
+    suspend fun getMovies(query: String, page: Int): MoviesRepositoryResult
 } 

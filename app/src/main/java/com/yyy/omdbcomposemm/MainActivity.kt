@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.yyy.omdbcomposemm.navigation.RouteClass
 import com.yyy.theme.OmdbComposeMmTheme
@@ -28,6 +29,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             OmdbComposeMmTheme {
                 val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
                 var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
                 val tabs = listOf("Films", "Favorites", "Settings")
 
@@ -50,9 +52,23 @@ class MainActivity : ComponentActivity() {
                     NavGraph(navController)
 
                     when (selectedTabIndex) {
-                        0 -> navController.navigate(RouteClass.MovieSearch())
-                        1 -> navController.navigate(RouteClass.Favorites())
-                        2 -> navController.navigate(RouteClass.Settings())
+                        0 -> {
+                            if (navBackStackEntry?.arguments?.getString("name") != RouteClass.MovieSearch().name) {
+                                navController.navigate(RouteClass.MovieSearch())
+                            }
+                        }
+
+                        1 -> {
+                            if (navBackStackEntry?.arguments?.getString("name") != RouteClass.Favorites().name) {
+                                navController.navigate(RouteClass.Favorites())
+                            }
+                        }
+
+                        2 -> {
+                            if (navBackStackEntry?.arguments?.getString("name") != RouteClass.Settings().name) {
+                                navController.navigate(RouteClass.Settings())
+                            }
+                        }
                     }
                 }
             }

@@ -34,7 +34,7 @@ data class MovieDetailResponse(
     @Json(name = "Poster")
     val poster: String?,
     @Json(name = "Ratings")
-    val ratings: List<Rating>?,
+    val ratings: List<RatingResponse>?,
     @Json(name = "Metascore")
     val metascore: String?,
     val imdbRating: String?,
@@ -55,7 +55,7 @@ data class MovieDetailResponse(
 )
 
 @JsonClass(generateAdapter = true)
-data class Rating(
+data class RatingResponse(
     @Json(name = "Source")
     val source: String?,
     @Json(name = "Value")
