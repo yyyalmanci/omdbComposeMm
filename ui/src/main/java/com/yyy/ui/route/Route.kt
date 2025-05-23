@@ -25,4 +25,10 @@ sealed class RouteClass() {
     data class Settings(
         val name: String = "Settings"
     ) : RouteClass()
+
+    @Serializable
+    data class MovieDetail(
+        val name: String = "MovieDetail",
+        val imdbId: String
+    ) : RouteClass()
 }

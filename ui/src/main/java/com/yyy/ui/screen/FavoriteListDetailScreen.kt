@@ -14,11 +14,18 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,50 +43,63 @@ import com.yyy.ui.commonview.RemoveConfirmationDialog
 import com.yyy.ui.model.SortOption
 import com.yyy.ui.viewmodel.FavoriteListDetailViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteListDetailScreen(
     viewModel: FavoriteListDetailViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    goDetail: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showRemoveConfirmationDialog by remember { mutableStateOf<MovieSearchResultItem?>(null) }
     var showMoveDialog by remember { mutableStateOf<MovieSearchResultItem?>(null) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Text(
-            text = stringResource(R.string.favorite_list_detail, uiState.listTitle),
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(16.dp),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        if (uiState.goBack) {
-            onNavigateBack()
-        }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(10.dp, 10.dp, 10.dp, 60.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(
-                items = if (uiState.sortOption != SortOption.NONE) {
-                    uiState.operatedList
-                } else {
-                    uiState.movies
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.favorite_list_detail, uiState.listTitle)) },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = null)
+                    }
                 }
-            ) { movie ->
-                MoviePoster(
-                    movie = movie,
-                    isFavorite = true,
-                    onFavoriteClick = { showRemoveConfirmationDialog = movie },
-                    onMoveClick = { showMoveDialog = movie },
-                    shouldShowMove = true
-                )
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(paddingValues)
+        ) {
+            if (uiState.goBack) {
+                onNavigateBack()
+            }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(10.dp, 10.dp, 10.dp, 60.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(
+                    items = if (uiState.sortOption != SortOption.NONE) {
+                        uiState.operatedList
+                    } else {
+                        uiState.movies
+                    }
+                ) { movie ->
+                    MoviePoster(
+                        movie = movie,
+                        isFavorite = true,
+                        onFavoriteClick = { showRemoveConfirmationDialog = movie },
+                        onMoveClick = { showMoveDialog = movie },
+                        shouldShowMove = true,
+                        onPosterClick = {
+                            goDetail(it)
+                        }
+                    )
+                }
             }
         }
     }

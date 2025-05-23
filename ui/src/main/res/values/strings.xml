@@ -44,4 +44,17 @@
     <string name="select_target_list">Hedef Liste Seçin</string>
     <string name="move_movie">Filmi Taşı</string>
     <string name="no_other_lists">Başka liste bulunmuyor</string>
+    <!-- Movie Detail Screen -->
+    <string name="genre">Tür</string>
+    <string name="director">Yönetmen</string>
+    <string name="writer">Yazar</string>
+    <string name="actors">Oyuncular</string>
+    <string name="plot">Özet</string>
+    <string name="language">Dil</string>
+    <string name="country">Ülke</string>
+    <string name="awards">Ödüller</string>
+    <string name="runtime">Süre</string>
+    <string name="released">Yayın Tarihi</string>
+    <string name="box_office">Gişe</string>
+    <string name="production">Yapım</string>
 </resources>

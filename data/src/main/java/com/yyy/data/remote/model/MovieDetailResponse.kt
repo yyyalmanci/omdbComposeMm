@@ -2,6 +2,8 @@ package com.yyy.data.remote.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.yyy.domain.model.MovieDetail
+import com.yyy.domain.model.Rating
 
 @JsonClass(generateAdapter = true)
 data class MovieDetailResponse(
@@ -61,3 +63,41 @@ data class RatingResponse(
     @Json(name = "Value")
     val value: String?
 )
+
+fun RatingResponse.toModel(): Rating {
+    return Rating(
+        source = source.orEmpty(),
+        value = value.orEmpty()
+    )
+}
+
+
+fun MovieDetailResponse.toModel(): MovieDetail {
+    return MovieDetail(
+        title = title.orEmpty(),
+        year = year.orEmpty(),
+        rated = rated.orEmpty(),
+        released = released.orEmpty(),
+        runtime = runtime.orEmpty(),
+        genre = genre.orEmpty(),
+        director = director.orEmpty(),
+        writer = writer.orEmpty(),
+        actors = actors.orEmpty(),
+        plot = plot.orEmpty(),
+        language = language.orEmpty(),
+        country = country.orEmpty(),
+        awards = awards.orEmpty(),
+        poster = poster.orEmpty(),
+        ratings = ratings?.map { it.toModel() } ?: emptyList(),
+        metascore = metascore.orEmpty(),
+        imdbRating = imdbRating.orEmpty(),
+        imdbVotes = imdbVotes.orEmpty(),
+        imdbID = imdbID.orEmpty(),
+        type = type.orEmpty(),
+        dvd = dvd.orEmpty(),
+        boxOffice = boxOffice.orEmpty(),
+        production = production.orEmpty(),
+        website = website.orEmpty(),
+        response = response.orEmpty()
+    )
+}

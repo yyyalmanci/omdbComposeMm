@@ -4,11 +4,13 @@ import com.yyy.data.di.IO
 import com.yyy.data.local.LocalDataSource
 import com.yyy.data.local.entity.SearchHistoryEntity
 import com.yyy.data.remote.RemoteDataSource
+import com.yyy.data.remote.model.MovieDetailResponse
 import com.yyy.data.remote.model.MovieSearchResponse
 import com.yyy.data.remote.model.toModel
 import com.yyy.data.util.NetworkResponse
 import com.yyy.data.util.makeCallWithTryCatch
 import com.yyy.domain.repository.MoviesRepository
+import com.yyy.domain.repository.result.MovieDetailRepositoryResult
 import com.yyy.domain.repository.result.MoviesRepositoryResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +32,7 @@ class MoviesRepositoryImpl @Inject constructor(
                     localDataSource.insertSearch(SearchHistoryEntity(query = query))
                     MoviesRepositoryResult.Success(movies)
                 }
+
                 is NetworkResponse.Error -> {
                     MoviesRepositoryResult.Failed(result.e?.message)
                 }
@@ -42,5 +45,19 @@ class MoviesRepositoryImpl @Inject constructor(
                 .sortedByDescending { it.timestamp }
                 .take(10)
                 .map { it.query }
+        }
+
+    override suspend fun getMovieDetail(imdbId: String): MovieDetailRepositoryResult =
+        withContext(ioDispatcher) {
+            when (val result = makeCallWithTryCatch { remoteDataSource.getMovie(imdbId) }) {
+                is NetworkResponse.Success -> {
+                    val movies = (result.data as MovieDetailResponse).toModel()
+                    MovieDetailRepositoryResult.Success(movies)
+                }
+
+                is NetworkResponse.Error -> {
+                    MovieDetailRepositoryResult.Failed(result.e?.message)
+                }
+            }
         }
 }

@@ -3,6 +3,7 @@ package com.yyy.ui.commonview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,7 +37,8 @@ fun MoviePoster(
     modifier: Modifier = Modifier,
     useLocalImage: Boolean = false,
     onMoveClick: () -> Unit = {},
-    shouldShowMove: Boolean = false
+    shouldShowMove: Boolean = false,
+    onPosterClick: (String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -68,7 +70,10 @@ fun MoviePoster(
                 contentDescription = movie.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp),
+                    .height(180.dp)
+                    .clickable {
+                        onPosterClick(movie.imdbID)
+                    },
                 contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -134,7 +139,8 @@ fun MoviePosterPreview() {
             ),
             isFavorite = true,
             onFavoriteClick = {},
-            useLocalImage = true
+            useLocalImage = true,
+            onPosterClick = {}
         )
     }
 }

@@ -57,7 +57,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
-fun MovieSearchScreen(viewModel: MovieSearchViewModel) {
+fun MovieSearchScreen(
+    viewModel: MovieSearchViewModel,
+    goDetail: (String) -> Unit
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val operatedList by viewModel.operatedList.collectAsStateWithLifecycle()
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
@@ -294,6 +297,9 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel) {
                                     } else {
                                         showAddToFavoritesDialog = movie
                                     }
+                                },
+                                onPosterClick = {
+                                    goDetail(it)
                                 }
                             )
                         }
