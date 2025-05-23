@@ -19,7 +19,7 @@ import javax.inject.Inject
 class MoviesRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
-    @IO private val ioDispatcher: CoroutineDispatcher,
+    @IO private val ioDispatcher: CoroutineDispatcher
 ) : MoviesRepository {
 
     override suspend fun getMovies(query: String, page: Int): MoviesRepositoryResult =
@@ -27,15 +27,9 @@ class MoviesRepositoryImpl @Inject constructor(
             when (val result = makeCallWithTryCatch { remoteDataSource.getMovies(query, page) }) {
                 is NetworkResponse.Success -> {
                     val movies = (result.data as MovieSearchResponse).toModel()
-
-                    localDataSource.insertSearch(
-                        SearchHistoryEntity(
-                            query = query
-                        )
-                    )
+                    localDataSource.insertSearch(SearchHistoryEntity(query = query))
                     MoviesRepositoryResult.Success(movies)
                 }
-
                 is NetworkResponse.Error -> {
                     MoviesRepositoryResult.Failed(result.e?.message)
                 }

@@ -1,6 +1,5 @@
 package com.yyy.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -177,7 +176,11 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel = hiltViewModel()) {
                         state = gridState
                     ) {
                         items(items = uiState.movies.search, key = { it.imdbID }) { movie ->
-                            MoviePoster(movie = movie)
+                            MoviePoster(
+                                movie = movie,
+                                isFavorite = movie.imdbID in uiState.favoriteMovieIds,
+                                onFavoriteClick = { viewModel.toggleFavorite(movie) }
+                            )
                         }
                     }
                 }
@@ -189,6 +192,8 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel = hiltViewModel()) {
 @Composable
 fun MoviePoster(
     movie: MovieSearchResultItem,
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier,
     useLocalImage: Boolean = false
 ) {
@@ -234,10 +239,19 @@ fun MoviePoster(
             )
         }
         Button(
-            onClick = { Log.d("MoviePoster", "Favoriye eklendi: ${movie.title}") },
-            modifier = Modifier.fillMaxWidth()
+            onClick = onFavoriteClick,
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
         ) {
-            Text(text = stringResource(R.string.add_to_favorites))
+            Text(
+                text = if (isFavorite) {
+                    stringResource(R.string.remove_from_favorites)
+                } else {
+                    stringResource(R.string.add_to_favorites)
+                },
+                maxLines = 1,
+                style = MaterialTheme.typography.labelMedium
+            )
         }
     }
 }
@@ -254,6 +268,8 @@ fun MoviePosterPreview() {
                 type = "movie",
                 poster = ""
             ),
+            isFavorite = true,
+            onFavoriteClick = {},
             useLocalImage = true
         )
     }
