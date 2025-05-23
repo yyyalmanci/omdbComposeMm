@@ -1,7 +1,6 @@
 package com.yyy.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -13,8 +12,8 @@ interface FavoriteMovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavoriteMovie(movie: FavoriteMovieEntity)
 
-    @Delete
-    suspend fun deleteFavoriteMovie(movie: FavoriteMovieEntity)
+    @Query("DELETE FROM favorite_movies WHERE imdbID = :imdbId")
+    suspend fun deleteFavoriteMovie(imdbId: String)
 
     @Query("SELECT * FROM favorite_movies ORDER BY addedAt DESC")
     fun getAllFavoriteMovies(): Flow<List<FavoriteMovieEntity>>

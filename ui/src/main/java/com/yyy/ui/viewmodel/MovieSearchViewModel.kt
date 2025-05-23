@@ -10,6 +10,7 @@ import com.yyy.domain.usecase.GetFavoriteMoviesUseCase
 import com.yyy.domain.usecase.GetSearchHistoryUseCase
 import com.yyy.domain.usecase.SearchMoviesUseCase
 import com.yyy.domain.usecase.ToggleFavoriteMovieUseCase
+import com.yyy.ui.model.FavoriteMovieId
 import com.yyy.ui.model.MovieSearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,7 +45,9 @@ class MovieSearchViewModel @Inject constructor(
         viewModelScope.launch {
             getFavoriteMoviesUseCase().collect { favoriteMovies ->
                 _uiState.update {
-                    it.copy(favoriteMovieIds = favoriteMovies.map { movie -> movie.imdbID }.toSet())
+                    it.copy(favoriteMovieIds = favoriteMovies.map { movie ->
+                        FavoriteMovieId(movie.imdbID, movie.listTitle)
+                    }.toSet())
                 }
             }
         }
@@ -130,9 +133,9 @@ class MovieSearchViewModel @Inject constructor(
         }
     }
 
-    fun toggleFavorite(movie: MovieSearchResultItem) {
+    fun toggleFavorite(movie: MovieSearchResultItem, listTitle: String) {
         viewModelScope.launch {
-            toggleFavoriteMovieUseCase(movie)
+            toggleFavoriteMovieUseCase(movie, listTitle)
         }
     }
 }

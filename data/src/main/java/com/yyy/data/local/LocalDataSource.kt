@@ -11,6 +11,6 @@ interface LocalDataSource {
 
     // Favorite Movie Operations
     suspend fun insertFavoriteMovie(movie: FavoriteMovieEntity)
-    suspend fun deleteFavoriteMovie(movie: FavoriteMovieEntity)
+    suspend fun deleteFavoriteMovie(imdbId: String)
     fun getAllFavoriteMovies(): Flow<List<FavoriteMovieEntity>>
 }

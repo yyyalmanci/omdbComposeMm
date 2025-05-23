@@ -1,9 +1,25 @@
 <resources>
     <string name="search_film">"Film ara..."</string>
-    <string name="search">"Ara"</string>
+    <string name="search">Ara</string>
+    <string name="search_hint">Film ara</string>
+    <string name="search_history">Arama Geçmişi</string>
+    <string name="clear_history">Geçmişi Temizle</string>
     <string name="film_not_found">Film Bulunamadı</string>
     <string name="add_to_favorites">Favorilere Ekle</string>
     <string name="need_search_film">"Lütfen bir film ara..."</string>
     <string name="remove_from_favorites">Favorilerden Çıkar</string>
-
+    <string name="remove_from_list">Listeden Çıkar</string>
+    <string name="remove_confirmation">Bu filmi listeden çıkarmak istediğinizden emin misiniz?</string>
+    <string name="yes">Evet</string>
+    <string name="no">Hayır</string>
+    <string name="unnamed_list">İsimsiz Liste</string>
+    <string name="favorite_lists">Favori Listeleri</string>
+    <string name="movie_count">%d film</string>
+    <string name="no_favorite_lists">Henüz favori listeniz bulunmuyor</string>
+    <string name="add_to_list">Listeye Ekle</string>
+    <string name="select_list">Liste Seçin</string>
+    <string name="new_list_name">Yeni Liste Adı</string>
+    <string name="create_new_list">Yeni Liste Oluştur</string>
+    <string name="create">Oluştur</string>
+    <string name="cancel">İptal</string>
 </resources>

@@ -30,10 +30,9 @@ class LocalDataSourceImpl @Inject constructor(
             favoriteMovieDao.insertFavoriteMovie(movie)
         }
 
-    override suspend fun deleteFavoriteMovie(movie: FavoriteMovieEntity) =
-        withContext(ioDispatcher) {
-            favoriteMovieDao.deleteFavoriteMovie(movie)
-        }
+    override suspend fun deleteFavoriteMovie(imdbId: String) = withContext(ioDispatcher) {
+        favoriteMovieDao.deleteFavoriteMovie(imdbId)
+    }
 
     override fun getAllFavoriteMovies(): Flow<List<FavoriteMovieEntity>> =
         favoriteMovieDao.getAllFavoriteMovies()

@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.yyy.omdbcomposemm.Greeting
 import com.yyy.omdbcomposemm.navigation.RouteClass
+import com.yyy.ui.screen.FavoritesListScreen
 import com.yyy.ui.screen.MovieSearchScreen
 
 
@@ -21,13 +22,13 @@ fun NavGraph(
         composable<RouteClass.MovieSearch> {
             MovieSearchScreen()
         }
-        composable<RouteClass.Favorites> {
-            Greeting(
-                name = RouteClass.Favorites().name,
-                modifier = Modifier.padding()
+        composable<RouteClass.FavoritesList> {
+            FavoritesListScreen(
+                onListClick = { listTitle ->
+                    // TODO: Navigate to list detail screen
+                }
             )
         }
-
         composable<RouteClass.Settings> {
             Greeting(
                 name = RouteClass.Settings().name,

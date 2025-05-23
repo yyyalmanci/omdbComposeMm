@@ -11,5 +11,10 @@ data class MovieSearchUiState(
     val isLoading: Boolean = false,
     val showFilmNotFound: Boolean = false,
     val searchHistory: List<String> = emptyList(),
-    val favoriteMovieIds: Set<String> = emptySet()
+    val favoriteMovieIds: Set<FavoriteMovieId> = emptySet()
+)
+
+data class FavoriteMovieId(
+    val imdbId: String,
+    val listTitle: String
 )
