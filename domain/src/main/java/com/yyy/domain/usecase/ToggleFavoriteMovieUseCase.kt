@@ -8,12 +8,12 @@ import javax.inject.Inject
 class ToggleFavoriteMovieUseCase @Inject constructor(
     private val repository: FavoritesRepository
 ) {
-    suspend operator fun invoke(movie: MovieSearchResultItem) {
+    suspend operator fun invoke(movie: MovieSearchResultItem, listTitle: String) {
         val favoriteMovies = repository.getAllFavoriteMovies().first()
         if (favoriteMovies.any { it.imdbID == movie.imdbID }) {
-            repository.removeFromFavorites(movie)
+            repository.removeFromFavorites(movie.imdbID)
         } else {
-            repository.addToFavorites(movie)
+            repository.addToFavorites(movie, listTitle)
         }
     }
 } 

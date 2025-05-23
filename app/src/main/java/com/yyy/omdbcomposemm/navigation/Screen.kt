@@ -11,8 +11,8 @@ sealed class RouteClass() {
     ) : RouteClass()
 
     @Serializable
-    data class Favorites(
-        val name: String = "Favorites"
+    data class FavoritesList(
+        val name: String = "FavoritesList"
     ) : RouteClass()
 
     @Serializable

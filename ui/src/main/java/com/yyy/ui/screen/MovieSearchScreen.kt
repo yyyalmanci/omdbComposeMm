@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -50,6 +51,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.yyy.domain.model.MovieSearchResultItem
 import com.yyy.theme.OmdbComposeMmTheme
 import com.yyy.ui.R
+import com.yyy.ui.commonview.AddToFavoritesDialog
+import com.yyy.ui.commonview.RemoveConfirmationDialog
 import com.yyy.ui.viewmodel.MovieSearchViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -60,6 +63,9 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel = hiltViewModel()) {
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var isSearchFocused by remember { mutableStateOf(false) }
     val gridState = rememberLazyGridState()
+    var showAddToFavoritesDialog by remember { mutableStateOf<MovieSearchResultItem?>(null) }
+    var showRemoveConfirmationDialog by remember { mutableStateOf<MovieSearchResultItem?>(null) }
+    val context = LocalContext.current
 
     LaunchedEffect(gridState, uiState) {
         snapshotFlow { gridState.layoutInfo.visibleItemsInfo }
@@ -176,16 +182,59 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel = hiltViewModel()) {
                         state = gridState
                     ) {
                         items(items = uiState.movies.search, key = { it.imdbID }) { movie ->
+                            val isFavorite =
+                                movie.imdbID in uiState.favoriteMovieIds.map { it.imdbId }
                             MoviePoster(
                                 movie = movie,
-                                isFavorite = movie.imdbID in uiState.favoriteMovieIds,
-                                onFavoriteClick = { viewModel.toggleFavorite(movie) }
+                                isFavorite = isFavorite,
+                                onFavoriteClick = {
+                                    if (isFavorite) {
+                                        showRemoveConfirmationDialog = movie
+                                    } else {
+                                        showAddToFavoritesDialog = movie
+                                    }
+                                }
                             )
                         }
                     }
                 }
             }
         }
+    }
+
+    if (showAddToFavoritesDialog != null) {
+        AddToFavoritesDialog(
+            onDismiss = { showAddToFavoritesDialog = null },
+            onConfirm = { listTitle ->
+                showAddToFavoritesDialog?.let { movie ->
+                    viewModel.toggleFavorite(movie, listTitle)
+                }
+                showAddToFavoritesDialog = null
+            },
+            existingLists = uiState.favoriteMovieIds.map { it.listTitle }.distinct(),
+            onNewList = { listTitle ->
+                showAddToFavoritesDialog?.let { movie ->
+                    viewModel.toggleFavorite(movie, listTitle)
+                }
+                showAddToFavoritesDialog = null
+            }
+        )
+    }
+
+    if (showRemoveConfirmationDialog != null) {
+        RemoveConfirmationDialog(
+            onDismiss = { showRemoveConfirmationDialog = null },
+            onConfirm = {
+                showRemoveConfirmationDialog?.let { movie ->
+                    // Find the list title for this movie
+                    val listTitle =
+                        uiState.favoriteMovieIds.find { it.imdbId == movie.imdbID }?.listTitle
+                            ?: context.getString(R.string.unnamed_list)
+                    viewModel.toggleFavorite(movie, listTitle)
+                }
+                showRemoveConfirmationDialog = null
+            }
+        )
     }
 }
 
@@ -266,7 +315,8 @@ fun MoviePosterPreview() {
                 year = "2022",
                 imdbID = "tt1234567",
                 type = "movie",
-                poster = ""
+                poster = "",
+                listTitle = "Favorites"
             ),
             isFavorite = true,
             onFavoriteClick = {},

@@ -59,8 +59,8 @@ class MainActivity : ComponentActivity() {
                         }
 
                         1 -> {
-                            if (navBackStackEntry?.arguments?.getString("name") != RouteClass.Favorites().name) {
-                                navController.navigate(RouteClass.Favorites())
+                            if (navBackStackEntry?.arguments?.getString("name") != RouteClass.FavoritesList().name) {
+                                navController.navigate(RouteClass.FavoritesList())
                             }
                         }
 

@@ -11,5 +11,6 @@ data class FavoriteMovieEntity(
     val year: String,
     val type: String,
     val poster: String,
-    val addedAt: Long = System.currentTimeMillis()
-) 
+    val addedAt: Long = System.currentTimeMillis(),
+    val listTitle: String
+)

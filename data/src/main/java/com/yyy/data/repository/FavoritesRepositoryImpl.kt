@@ -16,33 +16,36 @@ class FavoritesRepositoryImpl @Inject constructor(
     @IO private val ioDispatcher: CoroutineDispatcher
 ) : FavoritesRepository {
 
-    override suspend fun addToFavorites(movie: MovieSearchResultItem) = withContext(ioDispatcher) {
-        localDataSource.insertFavoriteMovie(movie.toFavoriteMovieEntity())
+    override suspend fun addToFavorites(movie: MovieSearchResultItem, listTitle: String) =
+        withContext(ioDispatcher) {
+            localDataSource.insertFavoriteMovie(movie.toFavoriteMovieEntity(listTitle))
     }
 
-    override suspend fun removeFromFavorites(movie: MovieSearchResultItem) =
-        withContext(ioDispatcher) {
-            localDataSource.deleteFavoriteMovie(movie.toFavoriteMovieEntity())
-        }
+    override suspend fun removeFromFavorites(imdbId: String) = withContext(ioDispatcher) {
+        localDataSource.deleteFavoriteMovie(imdbId)
+    }
 
     override fun getAllFavoriteMovies(): Flow<List<MovieSearchResultItem>> =
         localDataSource.getAllFavoriteMovies().map { entities ->
             entities.map { it.toMovieSearchResultItem() }
         }
 
-    private fun MovieSearchResultItem.toFavoriteMovieEntity() = FavoriteMovieEntity(
-        imdbID = imdbID,
-        title = title,
-        year = year,
-        type = type,
-        poster = poster
-    )
+    private fun MovieSearchResultItem.toFavoriteMovieEntity(listTitle: String) =
+        FavoriteMovieEntity(
+            imdbID = imdbID,
+            title = title,
+            year = year,
+            type = type,
+            poster = poster,
+            listTitle = listTitle
+        )
 
     private fun FavoriteMovieEntity.toMovieSearchResultItem() = MovieSearchResultItem(
         imdbID = imdbID,
         title = title,
         year = year,
         type = type,
-        poster = poster
+        poster = poster,
+        listTitle = listTitle
     )
 } 
