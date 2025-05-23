@@ -3,9 +3,13 @@ package com.yyy.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yyy.domain.model.MovieListItem
+import com.yyy.domain.model.MovieSearchResultItem
 import com.yyy.domain.repository.result.MoviesRepositoryResult
+import com.yyy.domain.usecase.GetFavoriteMoviesUseCase
 import com.yyy.domain.usecase.GetSearchHistoryUseCase
 import com.yyy.domain.usecase.SearchMoviesUseCase
+import com.yyy.domain.usecase.ToggleFavoriteMovieUseCase
 import com.yyy.ui.model.MovieSearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +22,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieSearchViewModel @Inject constructor(
     private val searchMoviesUseCase: SearchMoviesUseCase,
-    private val getSearchHistoryUseCase: GetSearchHistoryUseCase
+    private val getSearchHistoryUseCase: GetSearchHistoryUseCase,
+    private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
+    private val toggleFavoriteMovieUseCase: ToggleFavoriteMovieUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieSearchUiState())
     val uiState: StateFlow<MovieSearchUiState> = _uiState.asStateFlow()
@@ -34,11 +40,29 @@ class MovieSearchViewModel @Inject constructor(
                 _uiState.update { it.copy(searchHistory = history) }
             }
         }
+
+        viewModelScope.launch {
+            getFavoriteMoviesUseCase().collect { favoriteMovies ->
+                _uiState.update {
+                    it.copy(favoriteMovieIds = favoriteMovies.map { movie -> movie.imdbID }.toSet())
+                }
+            }
+        }
     }
 
     fun search(query: String) {
         if (query != currentQuery) {
-            _uiState.value = MovieSearchUiState(isLoading = true)
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isLoading = true,
+                    movies = MovieListItem(
+                        search = emptyList(),
+                        totalResults = "",
+                        response = ""
+                    ),
+                    showFilmNotFound = false
+                )
+            }
             currentPage = 1
             endReached = false
         }
@@ -96,15 +120,19 @@ class MovieSearchViewModel @Inject constructor(
                             )
                         }
                     }
-
                     is MoviesRepositoryResult.Failed -> {
                         endReached = true
                     }
-
                     else -> {}
                 }
                 isLoadingMore = false
             }
+        }
+    }
+
+    fun toggleFavorite(movie: MovieSearchResultItem) {
+        viewModelScope.launch {
+            toggleFavoriteMovieUseCase(movie)
         }
     }
 }

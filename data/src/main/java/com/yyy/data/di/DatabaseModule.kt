@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.yyy.data.local.AppDatabase
 import com.yyy.data.local.LocalDataSource
 import com.yyy.data.local.LocalDataSourceImpl
+import com.yyy.data.local.dao.FavoriteMovieDao
 import com.yyy.data.local.dao.SearchHistoryDao
 import dagger.Module
 import dagger.Provides
@@ -36,10 +37,15 @@ object DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideFavoriteMovieDao(database: AppDatabase) = database.favoriteMovieDao()
+
+    @Provides
+    @Singleton
     fun provideLocalDataSource(
         searchHistoryDao: SearchHistoryDao,
+        favoriteMovieDao: FavoriteMovieDao,
         @IO ioDispatcher: CoroutineDispatcher
     ): LocalDataSource {
-        return LocalDataSourceImpl(searchHistoryDao, ioDispatcher)
+        return LocalDataSourceImpl(searchHistoryDao, favoriteMovieDao, ioDispatcher)
     }
 } 

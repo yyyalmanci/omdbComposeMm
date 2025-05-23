@@ -3,6 +3,7 @@
     <string name="search_film">"Search Film..."</string>
     <string name="search">"Search"</string>
     <string name="film_not_found">"Film is not found"</string>
-    <string name="add_to_favorites">"Add to Favorites"</string>
+    <string name="add_to_favorites">Add to Favs</string>
     <string name="need_search_film">"Please search a film..."</string>
+    <string name="remove_from_favorites">Remove from Favs</string>
 </resources>
