@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,10 +24,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,13 +35,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.yyy.domain.model.MovieSearchResultItem
 import com.yyy.theme.OmdbComposeMmTheme
@@ -52,8 +57,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun MovieSearchScreen(viewModel: MovieSearchViewModel = hiltViewModel()) {
-    val uiState by viewModel.uiState.collectAsState()
-    var searchText by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var searchText by remember { mutableStateOf(TextFieldValue("")) }
+    var isSearchFocused by remember { mutableStateOf(false) }
     val gridState = rememberLazyGridState()
 
     LaunchedEffect(gridState, uiState) {
@@ -73,18 +79,17 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel = hiltViewModel()) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(8.dp)
         ) {
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
+                    .fillMaxWidth()
+                    .onFocusChanged { isSearchFocused = it.isFocused },
                 label = {
                     Text(
                         stringResource(R.string.search_film),
@@ -92,17 +97,55 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel = hiltViewModel()) {
                     )
                 }
             )
-            Button(
-                onClick = {
-                    if (searchText.isNotBlank()) {
-                        viewModel.search(searchText)
+
+            if (isSearchFocused && searchText.text.isEmpty() && uiState.searchHistory.isNotEmpty()) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 56.dp)
+                        .clip(RoundedCornerShape(4.dp)),
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 3.dp
+                ) {
+                    Column(
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    ) {
+                        uiState.searchHistory.forEach { query ->
+                            Text(
+                                text = query,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        searchText = TextFieldValue(
+                                            text = query,
+                                            selection = TextRange(query.length)
+                                        )
+                                        viewModel.search(query)
+                                    }
+                                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     }
-                },
-                enabled = searchText.isNotBlank()
-            ) {
-                Text("Search")
+                }
             }
         }
+
+        Button(
+            onClick = {
+                if (searchText.text.isNotBlank()) {
+                    viewModel.search(searchText.text)
+                }
+            },
+            enabled = searchText.text.isNotBlank(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+        ) {
+            Text(stringResource(R.string.search))
+        }
+
         Box(modifier = Modifier.fillMaxSize()) {
             when {
                 uiState.isLoading -> {
@@ -113,14 +156,12 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel = hiltViewModel()) {
                 }
 
                 uiState.movies.search.isEmpty() -> {
-
                     Text(
-                        text =
-                            if (uiState.showFilmNotFound) {
-                                stringResource(R.string.film_not_found)
-                            } else {
-                                stringResource(R.string.need_search_film)
-                            },
+                        text = if (uiState.showFilmNotFound) {
+                            stringResource(R.string.film_not_found)
+                        } else {
+                            stringResource(R.string.need_search_film)
+                        },
                         modifier = Modifier.align(Alignment.Center),
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -135,9 +176,7 @@ fun MovieSearchScreen(viewModel: MovieSearchViewModel = hiltViewModel()) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         state = gridState
                     ) {
-                        items(items = uiState.movies.search, key = {
-                            it.imdbID
-                        }) { movie ->
+                        items(items = uiState.movies.search, key = { it.imdbID }) { movie ->
                             MoviePoster(movie = movie)
                         }
                     }

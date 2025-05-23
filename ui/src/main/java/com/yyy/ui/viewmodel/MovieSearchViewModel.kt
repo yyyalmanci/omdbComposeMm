@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yyy.domain.repository.result.MoviesRepositoryResult
+import com.yyy.domain.usecase.GetSearchHistoryUseCase
 import com.yyy.domain.usecase.SearchMoviesUseCase
 import com.yyy.ui.model.MovieSearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieSearchViewModel @Inject constructor(
-    private val searchMoviesUseCase: SearchMoviesUseCase
+    private val searchMoviesUseCase: SearchMoviesUseCase,
+    private val getSearchHistoryUseCase: GetSearchHistoryUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieSearchUiState())
     val uiState: StateFlow<MovieSearchUiState> = _uiState.asStateFlow()
@@ -26,6 +28,14 @@ class MovieSearchViewModel @Inject constructor(
     private var isLoadingMore = false
     private var endReached = false
 
+    init {
+        viewModelScope.launch {
+            getSearchHistoryUseCase().collect { history ->
+                _uiState.update { it.copy(searchHistory = history) }
+            }
+        }
+    }
+
     fun search(query: String) {
         if (query != currentQuery) {
             _uiState.value = MovieSearchUiState(isLoading = true)
@@ -33,6 +43,7 @@ class MovieSearchViewModel @Inject constructor(
             endReached = false
         }
         currentQuery = query
+
         viewModelScope.launch {
             searchMoviesUseCase(query, currentPage).collect { result ->
                 when (result) {

@@ -21,6 +21,8 @@ navigationCompose = "2.9.0"
 hilt-navigation = "1.2.0"
 foundation = "1.8.2"
 coil = "2.5.0"
+room = "2.7.1"
+androidxComposeMaterialIcons = "1.6.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,6 +55,11 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "androidxComposeMaterialIcons" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

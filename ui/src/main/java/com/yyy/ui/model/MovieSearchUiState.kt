@@ -9,5 +9,6 @@ data class MovieSearchUiState(
         search = emptyList(),
         totalResults = "",
         response = ""
-    )
+    ),
+    val searchHistory: List<String> = emptyList()
 )
