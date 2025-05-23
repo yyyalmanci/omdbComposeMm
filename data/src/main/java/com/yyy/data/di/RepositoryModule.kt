@@ -2,8 +2,10 @@ package com.yyy.data.di
 
 import com.yyy.data.repository.FavoritesRepositoryImpl
 import com.yyy.data.repository.MoviesRepositoryImpl
+import com.yyy.data.repository.SettingsRepositoryImpl
 import com.yyy.domain.repository.FavoritesRepository
 import com.yyy.domain.repository.MoviesRepository
+import com.yyy.domain.repository.SettingsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -25,4 +27,10 @@ abstract class RepositoryModule {
     abstract fun bindFavoritesRepository(
         favoritesRepositoryImpl: FavoritesRepositoryImpl
     ): FavoritesRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(
+        settingsRepositoryImpl: SettingsRepositoryImpl
+    ): SettingsRepository
 } 

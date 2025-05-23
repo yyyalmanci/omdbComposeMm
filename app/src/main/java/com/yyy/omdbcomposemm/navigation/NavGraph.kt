@@ -1,13 +1,12 @@
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.yyy.omdbcomposemm.Greeting
 import com.yyy.omdbcomposemm.navigation.RouteClass
+import com.yyy.theme.ThemeOption
 import com.yyy.ui.screen.FavoritesListScreen
 import com.yyy.ui.screen.MovieSearchScreen
+import com.yyy.ui.screen.SettingsScreen
 import com.yyy.ui.viewmodel.MovieSearchViewModel
 
 
@@ -15,7 +14,8 @@ import com.yyy.ui.viewmodel.MovieSearchViewModel
 fun NavGraph(
     navController: NavHostController,
     movieSearchViewModel: MovieSearchViewModel,
-    startDestination: RouteClass = RouteClass.MovieSearch()
+    startDestination: RouteClass = RouteClass.MovieSearch(),
+    themeOption: ThemeOption
 ) {
     NavHost(
         navController = navController,
@@ -32,10 +32,7 @@ fun NavGraph(
             )
         }
         composable<RouteClass.Settings> {
-            Greeting(
-                name = RouteClass.Settings().name,
-                modifier = Modifier.padding()
-            )
+            SettingsScreen(themeOption)
         }
     }
 }

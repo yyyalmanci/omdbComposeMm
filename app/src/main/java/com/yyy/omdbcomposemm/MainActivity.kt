@@ -10,6 +10,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,12 +30,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            OmdbComposeMmTheme {
+            val movieSearchViewModel: MovieSearchViewModel = hiltViewModel()
+            val currentTheme by movieSearchViewModel.themeState.collectAsState()
+
+            OmdbComposeMmTheme(currentTheme) {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
                 val tabs = listOf("Films", "Favorites", "Settings")
-                val movieSearchViewModel: MovieSearchViewModel = hiltViewModel()
+
 
                 Column {
                     TabRow(selectedTabIndex = selectedTabIndex) {
@@ -54,7 +58,8 @@ class MainActivity : ComponentActivity() {
 
                     NavGraph(
                         navController = navController,
-                        movieSearchViewModel = movieSearchViewModel
+                        movieSearchViewModel = movieSearchViewModel,
+                        themeOption = currentTheme
                     )
 
                     when (selectedTabIndex) {
