@@ -45,7 +45,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.yyy.domain.model.MovieSearchResultItem
@@ -58,7 +57,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
-fun MovieSearchScreen(viewModel: MovieSearchViewModel = hiltViewModel()) {
+fun MovieSearchScreen(viewModel: MovieSearchViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var isSearchFocused by remember { mutableStateOf(false) }

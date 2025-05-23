@@ -8,11 +8,13 @@ import com.yyy.omdbcomposemm.Greeting
 import com.yyy.omdbcomposemm.navigation.RouteClass
 import com.yyy.ui.screen.FavoritesListScreen
 import com.yyy.ui.screen.MovieSearchScreen
+import com.yyy.ui.viewmodel.MovieSearchViewModel
 
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
+    movieSearchViewModel: MovieSearchViewModel,
     startDestination: RouteClass = RouteClass.MovieSearch()
 ) {
     NavHost(
@@ -20,7 +22,7 @@ fun NavGraph(
         startDestination = startDestination
     ) {
         composable<RouteClass.MovieSearch> {
-            MovieSearchScreen()
+            MovieSearchScreen(movieSearchViewModel)
         }
         composable<RouteClass.FavoritesList> {
             FavoritesListScreen(
