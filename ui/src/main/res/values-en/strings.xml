@@ -45,4 +45,16 @@
     <string name="select_target_list">Select List</string>
     <string name="move_movie">Move Film</string>
     <string name="no_other_lists">There is no other lists</string>
+    <string name="genre">Genre</string>
+    <string name="director">Director</string>
+    <string name="writer">Writer</string>
+    <string name="actors">Actors</string>
+    <string name="plot">Plot</string>
+    <string name="language">Language</string>
+    <string name="country">Country</string>
+    <string name="awards">Awards</string>
+    <string name="runtime">Runtime</string>
+    <string name="released">Released</string>
+    <string name="box_office">Box Office</string>
+    <string name="production">Production</string>
 </resources>

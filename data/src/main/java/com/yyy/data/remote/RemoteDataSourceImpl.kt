@@ -8,4 +8,7 @@ class RemoteDataSourceImpl @Inject constructor(
 ) : RemoteDataSource {
     override suspend fun getMovies(query: String, page: Int) =
         omdbApi.getMovies(query, page)
+
+    override suspend fun getMovie(imdbId: String) =
+        omdbApi.getMovie(imdbId)
 }
