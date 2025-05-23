@@ -4,6 +4,8 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -47,6 +49,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/gradle/incremental.annotation.processors"
+        }
+    }
 }
 
 dependencies {
@@ -71,6 +78,6 @@ dependencies {
 
     //hilt
     implementation(libs.hilt.android)
-    implementation(libs.ksp.compiler.hilt)
+    ksp(libs.ksp.compiler.hilt)
 
 }

@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -21,6 +23,7 @@ android {
 
     buildTypes {
         release {
+            isDebuggable = true
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -48,6 +51,8 @@ android {
 dependencies {
     implementation(project(":theme"))
     implementation(project(":ui"))
+    implementation(project(":data"))
+    implementation(project(":domain"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -67,7 +72,7 @@ dependencies {
 
     //hilt
     implementation(libs.hilt.android)
-    implementation(libs.ksp.compiler.hilt)
+    ksp(libs.ksp.compiler.hilt)
 
     //navigation
     implementation(libs.androidx.navigation.compose)
