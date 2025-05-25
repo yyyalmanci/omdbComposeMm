@@ -7,9 +7,11 @@ import com.yyy.domain.model.MovieListItem
 import com.yyy.domain.model.MovieSearchResultItem
 import com.yyy.domain.repository.result.MoviesRepositoryResult
 import com.yyy.domain.usecase.GetFavoriteMoviesUseCase
+import com.yyy.domain.usecase.GetLanguageUseCase
 import com.yyy.domain.usecase.GetSearchHistoryUseCase
 import com.yyy.domain.usecase.GetThemeUseCase
 import com.yyy.domain.usecase.SearchMoviesUseCase
+import com.yyy.domain.usecase.SetLanguageUseCase
 import com.yyy.domain.usecase.ToggleFavoriteMovieUseCase
 import com.yyy.theme.ThemeOption
 import com.yyy.ui.model.FavoriteMovieId
@@ -30,12 +32,17 @@ class MovieSearchViewModel @Inject constructor(
     private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
     private val toggleFavoriteMovieUseCase: ToggleFavoriteMovieUseCase,
     private val getThemeUseCase: GetThemeUseCase,
+    private val getLanguageUseCase: GetLanguageUseCase,
+    private val setLanguageUseCase: SetLanguageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieSearchUiState())
     val uiState: StateFlow<MovieSearchUiState> = _uiState.asStateFlow()
 
     private val _themeState = MutableStateFlow(ThemeOption.SYSTEM)
     val themeState: StateFlow<ThemeOption> = _themeState.asStateFlow()
+
+    private val _langState = MutableStateFlow("")
+    val langState: StateFlow<String> = _langState.asStateFlow()
 
     private val _operatedList = MutableStateFlow(emptyList<MovieSearchResultItem>())
     val operatedList: StateFlow<List<MovieSearchResultItem>> = _operatedList
@@ -47,12 +54,20 @@ class MovieSearchViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            getLanguageUseCase().collect { lang ->
+                _langState.update {
+                    lang
+                }
+            }
+        }
+        viewModelScope.launch {
             getThemeUseCase().collect { theme ->
                 _themeState.update {
                     theme
                 }
             }
         }
+
         viewModelScope.launch {
             getSearchHistoryUseCase().collect { history ->
                 _uiState.update { it.copy(searchHistory = history) }

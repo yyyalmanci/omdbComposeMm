@@ -29,7 +29,7 @@ fun NavGraph(
             }
         }
         composable<RouteClass.Settings> {
-            SettingsScreen(themeOption)
+            SettingsScreen(theme = themeOption)
         }
         composable<RouteClass.FavoritesListDetail> {
             FavoriteListDetailScreen(onNavigateBack = {
