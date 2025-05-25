@@ -6,6 +6,11 @@ import kotlinx.serialization.Serializable
 sealed class RouteClass() {
 
     @Serializable
+    data class Splash(
+        val name: String = "Splash"
+    ) : RouteClass()
+
+    @Serializable
     data class MovieSearch(
         val name: String = "MovieSearch"
     ) : RouteClass()

@@ -57,4 +57,9 @@
     <string name="released">Yayın Tarihi</string>
     <string name="box_office">Gişe</string>
     <string name="production">Yapım</string>
+    <!-- Language Settings -->
+    <string name="language_settings">Dil Ayarları</string>
+    <string name="turkish">Türkçe</string>
+    <string name="english">İngilizce</string>
+    <string name="system_language">Sistem Dili</string>
 </resources>

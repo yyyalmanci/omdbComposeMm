@@ -9,6 +9,7 @@ import com.yyy.ui.screen.FavoritesListScreen
 import com.yyy.ui.screen.MovieDetailScreen
 import com.yyy.ui.screen.MovieSearchScreen
 import com.yyy.ui.screen.SettingsScreen
+import com.yyy.ui.screen.SplashScreen
 import com.yyy.ui.viewmodel.MovieSearchViewModel
 
 
@@ -16,20 +17,27 @@ import com.yyy.ui.viewmodel.MovieSearchViewModel
 fun NavGraph(
     navController: NavHostController,
     movieSearchViewModel: MovieSearchViewModel,
-    startDestination: RouteClass = RouteClass.MovieSearch(),
+    startDestination: RouteClass = RouteClass.Splash(),
     themeOption: ThemeOption
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
+        composable<RouteClass.Splash> {
+            SplashScreen {
+                navController.navigate(RouteClass.MovieSearch()) {
+                    popUpTo(RouteClass.Splash()) { inclusive = true }
+                }
+            }
+        }
         composable<RouteClass.MovieSearch> {
             MovieSearchScreen(movieSearchViewModel) {
                 navController.navigate(RouteClass.MovieDetail(imdbId = it))
             }
         }
         composable<RouteClass.Settings> {
-            SettingsScreen(themeOption)
+            SettingsScreen(theme = themeOption)
         }
         composable<RouteClass.FavoritesListDetail> {
             FavoriteListDetailScreen(onNavigateBack = {

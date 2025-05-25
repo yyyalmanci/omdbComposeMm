@@ -21,19 +21,29 @@ class SettingsRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : SettingsRepository {
 
-    private object PreferencesKeys {
-        val THEME = stringPreferencesKey("theme")
+    companion object {
+        private val THEME_KEY = stringPreferencesKey("theme")
+        private val LANGUAGE_KEY = stringPreferencesKey("language")
     }
 
-    override val theme: Flow<ThemeOption> = context.dataStore.data
-        .map { preferences ->
-            preferences[PreferencesKeys.THEME]?.let { ThemeOption.valueOf(it) }
-                ?: ThemeOption.SYSTEM
-        }
+    override val theme: Flow<ThemeOption> = context.dataStore.data.map { preferences ->
+        val themeValue = preferences[THEME_KEY] ?: ThemeOption.SYSTEM.name
+        ThemeOption.valueOf(themeValue)
+    }
+
+    override val language: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[LANGUAGE_KEY] ?: "system"
+    }
 
     override suspend fun setTheme(theme: ThemeOption) {
         context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.THEME] = theme.name
+            preferences[THEME_KEY] = theme.name
+        }
+    }
+
+    override suspend fun setLanguage(language: String) {
+        context.dataStore.edit { preferences ->
+            preferences[LANGUAGE_KEY] = language
         }
     }
 } 
