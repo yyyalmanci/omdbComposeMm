@@ -11,7 +11,6 @@ import com.yyy.domain.usecase.GetLanguageUseCase
 import com.yyy.domain.usecase.GetSearchHistoryUseCase
 import com.yyy.domain.usecase.GetThemeUseCase
 import com.yyy.domain.usecase.SearchMoviesUseCase
-import com.yyy.domain.usecase.SetLanguageUseCase
 import com.yyy.domain.usecase.ToggleFavoriteMovieUseCase
 import com.yyy.theme.ThemeOption
 import com.yyy.ui.model.FavoriteMovieId
@@ -32,8 +31,7 @@ class MovieSearchViewModel @Inject constructor(
     private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
     private val toggleFavoriteMovieUseCase: ToggleFavoriteMovieUseCase,
     private val getThemeUseCase: GetThemeUseCase,
-    private val getLanguageUseCase: GetLanguageUseCase,
-    private val setLanguageUseCase: SetLanguageUseCase
+    private val getLanguageUseCase: GetLanguageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieSearchUiState())
     val uiState: StateFlow<MovieSearchUiState> = _uiState.asStateFlow()
@@ -47,10 +45,10 @@ class MovieSearchViewModel @Inject constructor(
     private val _operatedList = MutableStateFlow(emptyList<MovieSearchResultItem>())
     val operatedList: StateFlow<List<MovieSearchResultItem>> = _operatedList
 
-    private var currentQuery: String = ""
+    internal var currentQuery: String = ""
     var currentPage: Int = 1
-    private var isLoadingMore = false
-    private var endReached = false
+    internal var isLoadingMore = false
+    internal var endReached = false
 
     init {
         viewModelScope.launch {
@@ -91,9 +89,7 @@ class MovieSearchViewModel @Inject constructor(
                 currentState.copy(
                     isLoading = true,
                     movies = MovieListItem(
-                        search = emptyList(),
-                        totalResults = "",
-                        response = ""
+                        search = emptyList()
                     ),
                     showFilmNotFound = false
                 )
@@ -159,6 +155,9 @@ class MovieSearchViewModel @Inject constructor(
                     }
 
                     is MoviesRepositoryResult.Failed -> {
+                        _uiState.update {
+                            it.copy(isLoading = false)
+                        }
                         endReached = true
                     }
 
@@ -190,7 +189,7 @@ class MovieSearchViewModel @Inject constructor(
         updateOperatedList()
     }
 
-    private fun updateOperatedList() {
+    internal fun updateOperatedList() {
         val list = _uiState.value.movies.search.filter {
             val typeMatch = if (_uiState.value.typeFilter != null) {
                 it.type == _uiState.value.typeFilter

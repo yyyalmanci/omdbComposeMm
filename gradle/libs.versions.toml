@@ -24,6 +24,12 @@ coil = "2.5.0"
 room = "2.7.1"
 androidxComposeMaterialIcons = "1.6.7"
 datastore = "1.1.7"
+junitJupiter = "5.10.2"
+mockk = "1.13.10"
+kotlinxCoroutinesTest = "1.8.0"
+turbine = "1.1.0"
+androidxArchCoreTesting = "2.2.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,6 +68,13 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "androidxComposeMaterialIcons" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
+# Unit Testing
+test-junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
+test-junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
+test-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+test-kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+test-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+test-androidx-arch-core = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidxArchCoreTesting" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

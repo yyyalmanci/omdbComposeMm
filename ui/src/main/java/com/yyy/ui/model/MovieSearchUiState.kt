@@ -4,9 +4,7 @@ import com.yyy.domain.model.MovieListItem
 
 data class MovieSearchUiState(
     val movies: MovieListItem = MovieListItem(
-        search = emptyList(),
-        totalResults = "",
-        response = ""
+        search = emptyList()
     ),
     val isLoading: Boolean = false,
     val showFilmNotFound: Boolean = false,
