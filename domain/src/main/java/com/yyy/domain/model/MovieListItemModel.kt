@@ -1,9 +1,7 @@
 package com.yyy.domain.model
 
 data class MovieListItem(
-    val search: List<MovieSearchResultItem>,
-    val totalResults: String,
-    val response: String
+    val search: List<MovieSearchResultItem>
 )
 
 data class MovieSearchResultItem(

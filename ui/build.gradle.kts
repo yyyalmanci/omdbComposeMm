@@ -39,6 +39,11 @@ android {
             excludes += "/META-INF/gradle/incremental.annotation.processors"
         }
     }
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {
@@ -76,4 +81,13 @@ dependencies {
 
     //coil
     implementation(libs.coil.compose)
+
+    // Unit Tests
+    testImplementation(libs.test.junit.jupiter.api)
+    testRuntimeOnly(libs.test.junit.jupiter.engine)
+    testImplementation(libs.test.mockk) // veya libs.test.mockk.android
+    testImplementation(libs.test.kotlinx.coroutines)
+    testImplementation(libs.test.turbine)
+    testImplementation(libs.test.androidx.arch.core)
+
 }
