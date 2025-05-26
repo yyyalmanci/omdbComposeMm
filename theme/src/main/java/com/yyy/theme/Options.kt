@@ -8,11 +8,12 @@ enum class ThemeOption {
 
 enum class LangOption(val code: String) {
     EN("en"),
-    TR("tr");
+    TR("tr"),
+    EMPTY("");
 
     companion object {
         fun fromCode(code: String?): LangOption {
-            return LangOption.entries.find { it.code.equals(code, ignoreCase = true) } ?: TR
+            return LangOption.entries.find { it.code.equals(code, ignoreCase = true) } ?: EMPTY
         }
     }
 }

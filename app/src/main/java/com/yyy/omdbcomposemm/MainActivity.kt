@@ -13,8 +13,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -36,20 +38,26 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val movieSearchViewModel: MovieSearchViewModel = hiltViewModel()
-            val currentTheme by movieSearchViewModel.themeState.collectAsState()
-            val currentLanguage by movieSearchViewModel.langState.collectAsState()
+            val currentTheme by rememberUpdatedState(movieSearchViewModel.themeState.collectAsState())
+            val currentLanguage by rememberUpdatedState(movieSearchViewModel.langState.collectAsState())
             val navController = rememberNavController()
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
-            val tabs = listOf("Films", "Favorites", "Settings")
+            val tabs = listOf(
+                stringResource(com.yyy.ui.R.string.films),
+                stringResource(com.yyy.ui.R.string.favorites),
+                stringResource(com.yyy.ui.R.string.settings)
+            )
 
             LaunchedEffect(Unit) {
-                if (currentLanguage.isEmpty()) {
-                    languageManager.applyLanguage(LangOption.TR.code)
+                if (currentLanguage.value.isEmpty()) {
+                    languageManager.applyLanguage(LangOption.EN.code)
+                } else {
+                    languageManager.applyLanguage(currentLanguage.value)
                 }
             }
 
-            OmdbComposeMmTheme(currentTheme) {
+            OmdbComposeMmTheme(currentTheme.value) {
                 Column {
                     if (navBackStackEntry?.arguments?.getString("name") == RouteClass.MovieSearch().name || navBackStackEntry?.arguments?.getString(
                             "name"
@@ -76,7 +84,7 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         navController = navController,
                         movieSearchViewModel = movieSearchViewModel,
-                        themeOption = currentTheme
+                        themeOption = currentTheme.value
                     )
 
                     if (navBackStackEntry?.arguments?.getString("name") == RouteClass.MovieSearch().name || navBackStackEntry?.arguments?.getString(
