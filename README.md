@@ -8,7 +8,7 @@ development practices.
 1. Clone the project
 
 ```bash
-git clone https://github.com/yourusername/omdbComposeMm.git
+git clone https://github.com/yyyalmanci/omdbComposeMultiModule.git
 ```
 
 2. Add your API key
