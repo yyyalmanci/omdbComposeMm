@@ -30,9 +30,7 @@ data class MovieSearchResultItemResponse(
 )
 
 fun MovieSearchResponse.toModel() = MovieListItem(
-    search = search?.map { it.toModel() }.orEmpty(),
-    totalResults = totalResults.orEmpty(),
-    response = response.orEmpty()
+    search = search?.map { it.toModel() }.orEmpty()
 
 )
 
