@@ -170,6 +170,9 @@ private fun LanguageOptionSelector(
             val languageText = when (lang) {
                 LangOption.TR -> stringResource(R.string.turkish)
                 LangOption.EN -> stringResource(R.string.english)
+                else -> {
+                    return
+                }
             }
 
             Surface(

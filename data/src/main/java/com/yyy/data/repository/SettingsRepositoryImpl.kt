@@ -32,7 +32,7 @@ class SettingsRepositoryImpl @Inject constructor(
     }
 
     override val language: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[LANGUAGE_KEY] ?: "system"
+        preferences[LANGUAGE_KEY] ?: ""
     }
 
     override suspend fun setTheme(theme: ThemeOption) {
